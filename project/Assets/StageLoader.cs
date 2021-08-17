@@ -90,6 +90,20 @@ public class StageLoader : MonoBehaviour
     }
     
 
+    GameObject createElement(string stageName, string fileName, int offsetY) {
+            GameObject newElement = Instantiate(elementPrefab, new Vector3(0, -offsetY * 6f, 0), Quaternion.identity);
+            ElementManager elementManager = newElement.GetComponent<ElementManager>();
+            elementManager.loadNewSprite(stageName+"/"+fileName, fileName);
+            elementManager.stageLoader = this;            
+            return newElement;            
+    }
+
+    void setWinner() {
+        var winner =  (int)UnityEngine.Random.Range(0, 3);
+        Debug.Log("El winner es el "+winner);
+        stages[currentStage].GameObjectsList[winner].GetComponent<ElementManager>().isCorrect = true;
+    }
+
     void buildStage(int stageNum) {
         Debug.Log("Building Stage "+stageNum);
         var stage = stages[stageNum];
@@ -97,14 +111,10 @@ public class StageLoader : MonoBehaviour
         randomizeList<string>(stage.ElementList);
         Debug.Log(Math.Min(elementsPerStage, stage.ElementList.Count));        
         for(int i=0; i<Math.Min(elementsPerStage, stage.ElementList.Count); i++) {
-            string fileName = stage.ElementList[i];
-            GameObject newElement = Instantiate(elementPrefab, new Vector3(0, -offsetY * 6f, 0), Quaternion.identity);
-            ElementManager elementManager = newElement.GetComponent<ElementManager>();
-            elementManager.loadNewSprite(stage.Name+"/"+fileName, fileName);
-            elementManager.stageLoader = this;
+            stage.GameObjectsList.Add(createElement(stage.Name, stage.ElementList[i], offsetY));
             offsetY++;
-            stage.GameObjectsList.Add(newElement);
         }
+        setWinner();
         stage.ElementList.RemoveRange(0,Math.Min(elementsPerStage, stage.ElementList.Count));
     }
 
