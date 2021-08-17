@@ -15,13 +15,14 @@ public class StageLoader : MonoBehaviour
 
     List<Stage> stages;
     public GameObject elementPrefab;
+    private GameController gameController;
     public int elementsPerStage = 3;
     
     int currentStage;
 
     void Start()
     {
-
+        gameController = gameObject.GetComponent<GameController>();
     }
 
     public void startGame() {
@@ -45,8 +46,10 @@ public class StageLoader : MonoBehaviour
         }
         if(stages.Count == 0) {
             Debug.Log("Fin del juego");
-        }
-        buildStage(currentStage);
+            gameController.finishGame();
+        } else {
+            buildStage(currentStage);
+        }        
     }
 
     void removeElementsFromScene() {

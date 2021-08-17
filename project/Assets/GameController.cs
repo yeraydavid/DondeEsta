@@ -28,9 +28,16 @@ public class GameController : MonoBehaviour
     void startGame() {
         gameState = 1;
         cameraAnimator.SetInteger("gameState", gameState);
-        Debug.Log("Cambiamos a state 1 y movemos cámara");
+        Debug.Log("Cambiamos a state 1 y movemos cámara al juego");
         startButton.gameObject.SetActive(false);
         stageLoader.startGame();        
+    }
+
+    public void finishGame() {
+        gameState = 2;
+        cameraAnimator.SetInteger("gameState", gameState);
+        Debug.Log("Cambiamos a state 2 y movemos cámara al finish itle");
+        startButton.gameObject.SetActive(true);
     }
 
     // Update is called once per frame
