@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.IO;
+using UnityEngine.UI;
+using System.Globalization;
 
 public class StageLoader : MonoBehaviour
 {
@@ -15,6 +17,7 @@ public class StageLoader : MonoBehaviour
 
     List<Stage> stages;
     public GameObject elementPrefab;
+    public GameObject subtitles;
     private GameController gameController;
     public int elementsPerStage = 3;
     
@@ -101,10 +104,15 @@ public class StageLoader : MonoBehaviour
             return newElement;            
     }
 
+    string procesa(string word) {
+        return "¿Dónde está "+word+"?";
+    }
+
     void setWinner() {
         var winner =  (int)UnityEngine.Random.Range(0, 3);
         Debug.Log("El winner es el "+winner);
         stages[currentStage].GameObjectsList[winner].GetComponent<ElementManager>().isCorrect = true;
+        subtitles.GetComponent<Text>().text = procesa(stages[currentStage].ElementList[winner]);
     }
 
     void buildStage(int stageNum) {
