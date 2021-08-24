@@ -7,8 +7,10 @@ public class ElementManager : MonoBehaviour
 	    
 	public GameObject imageContainer;
     public GameObject element;
-    public GameObject particles;
-    public StageLoader stageLoader;
+    public StageLoader stageLoader;    
+    public GameController gameController;    
+    public AudioSource audioSourceGood;
+    public AudioSource audioSourceBad;
     public bool isCorrect = false;
 
     private string spriteName;
@@ -16,7 +18,7 @@ public class ElementManager : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
-    {
+    {        
     }
 
     // Update is called once per frame
@@ -29,19 +31,20 @@ public class ElementManager : MonoBehaviour
         stageLoader.finishStage();
     }
 
-    private void initParticles() {
-        particles.SetActive(true);
-    }
-
     public void hitted() {
         Debug.Log("Element Hitted");
         var animator = element.GetComponent<Animator>();
         if(isCorrect) {
             animator.SetInteger("estado", 2);
-            Invoke("initParticles", 0.2f);             
+            if(!gameController.isMuted) {
+                audioSourceGood.Play();
+            }            
             Invoke("finishStage", 2);            
-        } else {
-            animator.SetInteger("estado", 1);
+        } else {            
+            animator.SetInteger("estado", 1);            
+            if(!gameController.isMuted) {
+                audioSourceBad.Play();
+            }            
         }
     }
 
@@ -52,7 +55,6 @@ public class ElementManager : MonoBehaviour
 
     public void loadNewSprite(string fileName, string name) {
 		Renderer rend = imageContainer.GetComponent<Renderer>();
-        print(fileName);
         Texture2D texture = Resources.Load("Drawings/"+fileName) as Texture2D;		
         rend.material.mainTexture = texture;
         spriteName = name;

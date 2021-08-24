@@ -10,19 +10,20 @@ public class MusicController : MonoBehaviour {
     private AudioSource voiceSource;
     private bool isPaused = false;
     private string secondName;
+    public bool isMuted = false;
 
     void Awake () {
-        myMusic = Resources.LoadAll("Music",typeof(AudioClip));
+        myMusic = Resources.LoadAll("Music/Back",typeof(AudioClip));
         musicSource =  GetComponents<AudioSource>()[0];
-        musicSource.volume = 0.5f;        
         voiceSource =  GetComponents<AudioSource>()[1];
         musicSource.clip = myMusic[0] as AudioClip;
-        playAudio("");
     }
 
-    void Start (){
+    void Start (){        
         musicSource.time = 1f;
-        musicSource.Play(); 
+        if(!isMuted) {
+            musicSource.Play(); 
+        }        
     }
 
     // Update is called once per frame
@@ -33,6 +34,9 @@ public class MusicController : MonoBehaviour {
     }
 
     void playNextMusic() {
+        if(isMuted) {
+            return;
+        }
         lastClip = (lastClip + 1) % 3;
         musicSource.clip = myMusic[lastClip] as AudioClip;
         musicSource.Play();
@@ -54,11 +58,16 @@ public class MusicController : MonoBehaviour {
         voiceSource.Play();
     }
 
-    void playAudio(string audioResourceName) {
-        AudioClip elementClip = Resources.Load("Music/voices/donde está",typeof(AudioClip)) as AudioClip;
+    public void playAudio(string prefix, string audioResourceName) {
+        if(isMuted) {
+            return;
+        }
+        AudioClip elementClip = Resources.Load(prefix,typeof(AudioClip)) as AudioClip;
         voiceSource.clip = elementClip;
-        secondName = "Music/voices/el avión";
-        Invoke("playSecond", elementClip.length);
         voiceSource.Play();
+        if(audioResourceName != "") {
+        secondName = audioResourceName;
+        Invoke("playSecond", elementClip.length);        
+        }        
     }
 }

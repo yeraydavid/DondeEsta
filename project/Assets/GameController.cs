@@ -12,7 +12,10 @@ public class GameController : MonoBehaviour
     public GameObject subtitlesButton;
     public GameObject subtitles;
     public bool subtitlesEnabled;
+    public bool isMuted;
+    public GameObject[] endParticles;
     Animator cameraAnimator;
+    MusicController musicController;
 
     // Start is called before the first frame update
     void Start()
@@ -20,9 +23,11 @@ public class GameController : MonoBehaviour
         stageLoader = GetComponent<StageLoader>();
         startButton.onClick.AddListener(startGame);
         cameraAnimator =  gameCamera.GetComponent<Animator>();
+        musicController =  GetComponent<MusicController>();
         subtitles.SetActive(false);
         subtitlesButton.SetActive(false);
         subtitlesEnabled = false;
+        isMuted = false;
     }
 
     void resetGameState() {
@@ -36,20 +41,27 @@ public class GameController : MonoBehaviour
     void startGame() {
         gameState = 1;
         cameraAnimator.SetInteger("gameState", gameState);
-        Debug.Log("Cambiamos a state 1 y movemos cámara al juego");
+        Debug.Log("Game state 1");
         startButton.gameObject.SetActive(false);
         subtitles.SetActive(true && subtitlesEnabled);
         subtitlesButton.SetActive(true);
+        foreach(GameObject particleSystem in endParticles) {
+            particleSystem.SetActive(false);
+        }
         stageLoader.startGame();        
     }
 
     public void finishGame() {
         gameState = 2;
         cameraAnimator.SetInteger("gameState", gameState);
-        Debug.Log("Cambiamos a state 2 y movemos cámara al finish title");
+        Debug.Log("Game state 2");
+        musicController.playAudio("Music/SFX/plasterbrain__tada-fanfare-a","");
         startButton.gameObject.SetActive(true);
         subtitlesButton.SetActive(false);
         subtitles.SetActive(false);
+        foreach(GameObject particleSystem in endParticles) {
+            particleSystem.SetActive(true);
+        }        
     }
 
     public void toggleSubtitles() {
@@ -60,9 +72,17 @@ public class GameController : MonoBehaviour
         }
     }
 
+    public void toggleIsMuted() {
+        isMuted = !isMuted;
+        musicController.isMuted = isMuted;
+    }
+
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.A))  {
+            Debug.Log("Force finish game");
+            finishGame();
+        }
     }
 }

@@ -14,12 +14,13 @@ public class TouchableElement : MonoBehaviour
     }
 
     void touched() {
+        Debug.Log("[DE]: Hitted");
         GetComponent<ElementManager>().hitted();
     }
 
 	void Update()
     {   
-        if ((Input.touchCount > 0) && (Input.GetTouch(0).phase == TouchPhase.Began))
+        /*if ((Input.touchCount > 0) && (Input.GetTouch(0).phase == TouchPhase.Began))
         {
             Ray raycast = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
             RaycastHit raycastHit;
@@ -27,17 +28,21 @@ public class TouchableElement : MonoBehaviour
             {
                 touched();
             }
-        }
+        }*/
+    }
+
+    void OnMouseDown() {
+        touched();
     }
 
     void OnMouseUpAsButton() 
     {
-        Ray ray = Camera.main.ScreenPointToRay( Input.mousePosition );
+        /*Ray ray = Camera.main.ScreenPointToRay( Input.mousePosition );
         RaycastHit hit;
          
          if( Physics.Raycast( ray, out hit, 100 ) )
          {
              touched();
-         }
+         }*/
     }
 }
